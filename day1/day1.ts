@@ -1,27 +1,29 @@
-import fs from 'fs';
+import { assertEqual, newLineRegex, readInput } from '../utils';
 
-const parseInput = () => {
-  return fs.readFileSync('day1/day1.txt', 'utf8').split(/\r?\n/);
-};
-
-const computeSums = (input: string[]) => {
-  const totalCaloriesCarriedPerElf: number[] = [];
+const computeSolution = (input: string[]) => {
+  const totalCaloriesPerElf: number[] = [];
 
   let sum = 0;
   for (const calories of input) {
     if (!calories) {
-      totalCaloriesCarriedPerElf.push(sum);
+      totalCaloriesPerElf.push(sum);
       sum = 0;
     } else {
       sum += parseInt(calories);
     }
   }
 
-  return totalCaloriesCarriedPerElf.sort((a, b) => a - b).reverse();
+  const sorted = totalCaloriesPerElf.sort((a, b) => a - b);
+  const len = sorted.length;
+
+  return [sorted[len - 1], sorted[len - 1] + sorted[len - 2] + sorted[len - 3]];
 };
 
-const input = parseInput();
-const sums = computeSums(input);
+const testInput = readInput('day1/day1test.txt').split(newLineRegex);
+assertEqual(computeSolution(testInput)[0], 24000);
+assertEqual(computeSolution(testInput)[1], 45000);
 
-console.log(`Part one: ${sums[0]}.`);
-console.log(`Part two: ${sums[0] + sums[1] + sums[2]}.`);
+const input = readInput('day1/day1.txt').split(newLineRegex);
+const [partOne, partTwo] = computeSolution(input);
+console.log(`Part one solution: ${partOne}.`);
+console.log(`Part two solution: ${partTwo}.`);
